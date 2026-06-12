@@ -1,0 +1,7 @@
+# ~/.npmrc — npm defaults
+init-author-name=Steven Wilson
+init-author-email=steven@dominion79.co.uk
+init-license=MIT
+save-exact=true
+fund=false
+audit=false

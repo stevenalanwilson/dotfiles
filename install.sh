@@ -59,6 +59,7 @@ step "Symlinking dotfiles"
 symlink() {
   local src="$DOTFILES/$1"
   local dst="$HOME/$2"
+  mkdir -p "$(dirname "$dst")"
   if [[ -f "$dst" && ! -L "$dst" ]]; then
     mv "$dst" "${dst}.bak"
     info "Backed up $2 → ${2}.bak"
@@ -67,33 +68,51 @@ symlink() {
   info "$dst → $src"
 }
 
-symlink zshrc           .zshrc
-symlink zsh_aliases     .zsh_aliases
-symlink p10k.zsh        .p10k.zsh
-symlink gitconfig       .gitconfig
+symlink zshrc            .zshrc
+symlink zsh_aliases      .zsh_aliases
+symlink zsh_options      .zsh_options
+symlink zsh_functions    .zsh_functions
+symlink p10k.zsh         .p10k.zsh
+symlink gitconfig        .gitconfig
 symlink gitignore_global .gitignore_global
-symlink ssh_config      .ssh/config
+symlink npmrc            .npmrc
+symlink ssh_config       .ssh/config
 
 done_ "Dotfiles symlinked"
 
-# ── 7. Node via fnm ───────────────────────────────────────────────────────────
+# ── 7. bat theme ──────────────────────────────────────────────────────────────
+step "Installing bat Catppuccin theme"
+mkdir -p "$(bat --config-dir)/themes"
+curl -sL "https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Mocha.tmTheme" \
+  -o "$(bat --config-dir)/themes/Catppuccin-Mocha.tmTheme"
+bat cache --build &>/dev/null
+symlink bat_config "$(bat --config-dir | sed "s|$HOME/||")/config"
+done_ "bat theme installed"
+
+# ── 8. Node via fnm ───────────────────────────────────────────────────────────
 step "Installing Node LTS via fnm"
 eval "$(fnm env)"
 fnm install --lts
 fnm default lts-latest
 done_ "Node $(node -v) ready"
 
-# ── 8. macOS defaults (optional) ─────────────────────────────────────────────
+# ── 9. gh config ──────────────────────────────────────────────────────────────
+step "Configuring gh CLI"
+gh config set editor "code --wait"
+gh config set git_protocol ssh
+done_ "gh configured"
+
+# ── 10. macOS defaults (optional) ────────────────────────────────────────────
 step "macOS system defaults"
 read "reply?Apply macOS defaults (keyboard, Finder, Dock, screenshots)? [y/N] "
 if [[ "$reply" =~ ^[Yy]$ ]]; then
   zsh "$DOTFILES/macos.sh"
 else
-  info "Skipped — run 'zsh macos.sh' any time"
+  info "Skipped — run 'zsh ~/dotfiles/macos.sh' any time"
 fi
 
-# ── 9. Done ───────────────────────────────────────────────────────────────────
+# ── 11. Done ──────────────────────────────────────────────────────────────────
 echo "\n${GREEN}All done!${NC}"
 echo "  • Open a new terminal tab to load your shell"
 echo "  • Run 'p10k configure' to customise your prompt"
-echo "  • Sign in to 1Password and enable SSH agent under Settings → Developer"
+echo "  • Sign in to 1Password and enable SSH agent: Settings → Developer → SSH Agent"

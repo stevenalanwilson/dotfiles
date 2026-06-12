@@ -1,0 +1,19 @@
+# ── History ───────────────────────────────────────────────────────────────────
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000
+
+setopt HIST_IGNORE_ALL_DUPS     # no duplicate entries
+setopt HIST_IGNORE_SPACE        # commands starting with space aren't saved
+setopt HIST_FIND_NO_DUPS        # don't show dupes when searching
+setopt HIST_SAVE_NO_DUPS        # don't write dupes to file
+setopt SHARE_HISTORY            # share history across all terminal sessions
+setopt HIST_REDUCE_BLANKS       # remove superfluous blanks
+setopt INC_APPEND_HISTORY       # write to history immediately, not on exit
+
+# ── Zsh options ───────────────────────────────────────────────────────────────
+setopt AUTO_CD                  # type a dir name to cd into it
+setopt CORRECT                  # suggest corrections for mistyped commands
+setopt NO_BEEP                  # silence all bells
+setopt EXTENDED_GLOB            # extended globbing patterns
+setopt GLOB_DOTS                # include dotfiles in globs

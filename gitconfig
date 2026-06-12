@@ -63,3 +63,11 @@
 
 [rerere]
 	enabled = true
+[maintenance]
+	repo = /Users/stevenwilson/Projects/73rdAllestreeWebApp
+	repo = /Users/stevenwilson/Projects/AI-cost-explination
+	repo = /Users/stevenwilson/Projects/SAW
+	repo = /Users/stevenwilson/Projects/ai-coding-template
+	repo = /Users/stevenwilson/Projects/app-prototyping-kit
+	repo = /Users/stevenwilson/Projects/developer-recruitment-automation
+	repo = /Users/stevenwilson/dotfiles

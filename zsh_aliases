@@ -2,6 +2,15 @@
 alias ..="cd .."
 alias ...="cd ../.."
 alias ~="cd ~"
+alias proj="cd ~/Projects"
+
+# ── Projects ──────────────────────────────────────────────────────────────────
+alias p73="cd ~/Projects/73rdAllestreeWebApp"
+alias psaw="cd ~/Projects/SAW"
+alias pai="cd ~/Projects/AI-cost-explination"
+alias pkit="cd ~/Projects/app-prototyping-kit"
+alias pagent="cd ~/Projects/agentflow-flows"
+alias pdots="cd ~/dotfiles"
 
 # ── eza (better ls) ───────────────────────────────────────────────────────────
 alias ls="eza --icons"
@@ -26,6 +35,8 @@ alias gds="git diff --staged"
 alias gco="git checkout"
 alias gcb="git checkout -b"
 alias gpr="gh pr create --web"
+alias gundo="git reset --soft HEAD~1"
+alias gunstage="git reset HEAD --"
 
 # ── Node / npm ────────────────────────────────────────────────────────────────
 alias ni="npm install"
@@ -33,26 +44,44 @@ alias nr="npm run"
 alias nrd="npm run dev"
 alias nrb="npm run build"
 alias nlg="npm list -g --depth=0"
+alias pni="pnpm install"
+alias pnr="pnpm run"
+alias pnrd="pnpm run dev"
+alias pnrb="pnpm run build"
 
 # ── Python / uv ───────────────────────────────────────────────────────────────
 alias py="python3"
 alias venv="uv venv && source .venv/bin/activate"
+alias ipy="ipython"
 
 # ── Terraform ─────────────────────────────────────────────────────────────────
 alias tf="terraform"
 alias tfi="terraform init"
 alias tfp="terraform plan"
 alias tfa="terraform apply"
+alias tfd="terraform destroy"
+alias tfo="terraform output"
 
 # ── Utilities ─────────────────────────────────────────────────────────────────
 alias reload="source ~/.zshrc"
 alias zshrc="$EDITOR ~/.zshrc"
 alias aliases="$EDITOR ~/.zsh_aliases"
+alias functions="$EDITOR ~/.zsh_functions"
+alias dotfiles="cd ~/dotfiles && $EDITOR ."
 alias ip="curl -s ifconfig.me"
+alias localip="ipconfig getifaddr en0"
 alias ports="lsof -i -P -n | grep LISTEN"
 alias path='echo $PATH | tr ":" "\n"'
 alias week="date +%V"
+alias now="date '+%Y-%m-%d %H:%M:%S'"
+alias cleanup="find . -name '.DS_Store' -delete && find . -name '*.log' -delete"
 
 # ── fd + ripgrep ──────────────────────────────────────────────────────────────
 alias find="fd"
 alias grep="rg"
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+alias showfiles="defaults write com.apple.finder AppleShowAllFiles true && killall Finder"
+alias hidefiles="defaults write com.apple.finder AppleShowAllFiles false && killall Finder"
+alias flushdns="sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder && echo 'DNS flushed'"
+alias screensaver="open -a ScreenSaverEngine"

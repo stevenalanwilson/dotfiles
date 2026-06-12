@@ -22,15 +22,20 @@ export EDITOR="code --wait"
 export VISUAL="code --wait"
 
 # ── PATH ──────────────────────────────────────────────────────────────────────
-# Node — managed by fnm (replaces pinned node@18/node@22 exports)
 eval "$(fnm env --use-on-cd --shell zsh)"
 
 export PATH="$PATH:/Users/stevenwilson/.local/bin"
 export PATH="/Users/stevenwilson/.antigravity/antigravity/bin:$PATH"
 export PATH="/Users/stevenwilson/.antigravity-ide/antigravity-ide/bin:$PATH"
 
+# ── Options & history ─────────────────────────────────────────────────────────
+[[ -f ~/.zsh_options ]] && source ~/.zsh_options
+
 # ── Aliases ───────────────────────────────────────────────────────────────────
 [[ -f ~/.zsh_aliases ]] && source ~/.zsh_aliases
+
+# ── Functions ─────────────────────────────────────────────────────────────────
+[[ -f ~/.zsh_functions ]] && source ~/.zsh_functions
 
 # ── fzf — fuzzy finder ────────────────────────────────────────────────────────
 source <(fzf --zsh)
