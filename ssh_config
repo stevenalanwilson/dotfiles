@@ -1,0 +1,19 @@
+# SSH config — Steven Wilson
+# Keys are managed by 1Password SSH agent.
+# After install, ensure 1Password is running and SSH agent is enabled
+# in: 1Password → Settings → Developer → SSH Agent
+
+Host github.com
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
+
+# 1Password agent for all hosts
+Host *
+  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
+# Mac Mini home server
+Host macmini
+  HostName 192.168.1.246
+  User server
+  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"

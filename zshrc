@@ -17,6 +17,10 @@ source $ZSH/oh-my-zsh.sh 2>/dev/null || true
 source ~/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+# ── Editor ────────────────────────────────────────────────────────────────────
+export EDITOR="code --wait"
+export VISUAL="code --wait"
+
 # ── PATH ──────────────────────────────────────────────────────────────────────
 # Node — managed by fnm (replaces pinned node@18/node@22 exports)
 eval "$(fnm env --use-on-cd --shell zsh)"
@@ -39,8 +43,3 @@ source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # ── zsh-syntax-highlighting (must be last) ────────────────────────────────────
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# ── OpenClaw (not installed) ──────────────────────────────────────────────────
-# source "/Users/stevenwilson/.openclaw/completions/openclaw.zsh"
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

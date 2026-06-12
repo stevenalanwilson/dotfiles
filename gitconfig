@@ -1,0 +1,65 @@
+[user]
+	name = Steven Wilson
+	email = steven@dominion79.co.uk
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG4LwVT996ck7zCwVg1OHRH2nzjCfNxjZNzaBNxwEaab
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+
+[commit]
+	gpgsign = true
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = true
+
+[push]
+	autoSetupRemote = true
+
+[rebase]
+	autoStash = true
+
+[core]
+	editor = code --wait
+	excludesfile = ~/.gitignore_global
+	autocrlf = input
+
+[merge]
+	conflictstyle = diff3
+
+[diff]
+	colorMoved = zebra
+
+[alias]
+	# Status & log
+	s       = status -sb
+	lg      = log --oneline --graph --decorate -20
+	lga     = log --oneline --graph --decorate --all
+	last    = log -1 HEAD --stat
+	# Branches
+	br      = branch -vv
+	brd     = branch -d
+	brD     = branch -D
+	# Staging
+	unstage = reset HEAD --
+	undo    = reset --soft HEAD~1
+	# Stash
+	sl      = stash list
+	ss      = stash save
+	sp      = stash pop
+	# Remotes
+	rv      = remote -v
+	# Useful views
+	contributors = shortlog --summary --numbered
+	aliases = config --get-regexp alias
+
+[color]
+	ui = auto
+
+[rerere]
+	enabled = true

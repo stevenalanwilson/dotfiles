@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # dotfiles/install.sh — Steven Wilson
-# Run this on a fresh Mac to install everything from scratch.
+# Run on a fresh Mac to install everything from scratch.
 # Usage: zsh install.sh
 
 set -e
@@ -8,16 +8,18 @@ set -e
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 YELLOW='\033[1;33m'
 GREEN='\033[0;32m'
+BLUE='\033[0;34m'
 NC='\033[0m'
 
-step() { echo "${YELLOW}▶ $1${NC}"; }
+step()  { echo "\n${YELLOW}▶ $1${NC}"; }
 done_() { echo "${GREEN}✓ $1${NC}"; }
+info()  { echo "${BLUE}  $1${NC}"; }
 
 # ── 1. Xcode CLI tools ────────────────────────────────────────────────────────
 step "Checking Xcode CLI tools"
 if ! xcode-select -p &>/dev/null; then
   xcode-select --install
-  echo "  Install Xcode CLI tools, then re-run this script."
+  echo "  Install Xcode CLI tools then re-run this script."
   exit 1
 fi
 done_ "Xcode CLI tools present"
@@ -30,16 +32,10 @@ if ! command -v brew &>/dev/null; then
 fi
 done_ "Homebrew ready"
 
-# ── 3. Brew packages ──────────────────────────────────────────────────────────
-step "Installing Homebrew packages"
-brew install \
-  git gh \
-  fnm \
-  fzf zsh-autosuggestions zsh-syntax-highlighting \
-  eza bat zoxide fd ripgrep \
-  pipx uv \
-  terraform
-done_ "Homebrew packages installed"
+# ── 3. Brew bundle ────────────────────────────────────────────────────────────
+step "Installing packages from Brewfile"
+brew bundle install --file="$DOTFILES/Brewfile"
+done_ "Brewfile packages installed"
 
 # ── 4. Oh My Zsh ──────────────────────────────────────────────────────────────
 step "Checking Oh My Zsh"
@@ -65,15 +61,18 @@ symlink() {
   local dst="$HOME/$2"
   if [[ -f "$dst" && ! -L "$dst" ]]; then
     mv "$dst" "${dst}.bak"
-    echo "  Backed up existing $2 → ${2}.bak"
+    info "Backed up $2 → ${2}.bak"
   fi
   ln -sf "$src" "$dst"
-  echo "  $dst → $src"
+  info "$dst → $src"
 }
 
-symlink zshrc        .zshrc
-symlink zsh_aliases  .zsh_aliases
-symlink p10k.zsh     .p10k.zsh
+symlink zshrc           .zshrc
+symlink zsh_aliases     .zsh_aliases
+symlink p10k.zsh        .p10k.zsh
+symlink gitconfig       .gitconfig
+symlink gitignore_global .gitignore_global
+symlink ssh_config      .ssh/config
 
 done_ "Dotfiles symlinked"
 
@@ -84,7 +83,17 @@ fnm install --lts
 fnm default lts-latest
 done_ "Node $(node -v) ready"
 
-# ── 8. Done ───────────────────────────────────────────────────────────────────
-echo ""
-echo "${GREEN}All done! Open a new terminal tab to load your shell.${NC}"
-echo "Run 'p10k configure' if you want to customise your prompt."
+# ── 8. macOS defaults (optional) ─────────────────────────────────────────────
+step "macOS system defaults"
+read "reply?Apply macOS defaults (keyboard, Finder, Dock, screenshots)? [y/N] "
+if [[ "$reply" =~ ^[Yy]$ ]]; then
+  zsh "$DOTFILES/macos.sh"
+else
+  info "Skipped — run 'zsh macos.sh' any time"
+fi
+
+# ── 9. Done ───────────────────────────────────────────────────────────────────
+echo "\n${GREEN}All done!${NC}"
+echo "  • Open a new terminal tab to load your shell"
+echo "  • Run 'p10k configure' to customise your prompt"
+echo "  • Sign in to 1Password and enable SSH agent under Settings → Developer"
