@@ -1,0 +1,58 @@
+# ── Navigation ────────────────────────────────────────────────────────────────
+alias ..="cd .."
+alias ...="cd ../.."
+alias ~="cd ~"
+
+# ── eza (better ls) ───────────────────────────────────────────────────────────
+alias ls="eza --icons"
+alias ll="eza -la --icons --git --group-directories-first"
+alias lt="eza --tree --icons --level=2"
+alias llt="eza --tree -la --icons --git --level=2"
+
+# ── bat (better cat) ──────────────────────────────────────────────────────────
+alias cat="bat --paging=never"
+alias less="bat"
+
+# ── Git ───────────────────────────────────────────────────────────────────────
+alias gs="git status -sb"
+alias ga="git add"
+alias gc="git commit -m"
+alias gca="git commit --amend --no-edit"
+alias gp="git push"
+alias gpf="git push --force-with-lease"
+alias gl="git log --oneline --graph --decorate -20"
+alias gd="git diff"
+alias gds="git diff --staged"
+alias gco="git checkout"
+alias gcb="git checkout -b"
+alias gpr="gh pr create --web"
+
+# ── Node / npm ────────────────────────────────────────────────────────────────
+alias ni="npm install"
+alias nr="npm run"
+alias nrd="npm run dev"
+alias nrb="npm run build"
+alias nlg="npm list -g --depth=0"
+
+# ── Python / uv ───────────────────────────────────────────────────────────────
+alias py="python3"
+alias venv="uv venv && source .venv/bin/activate"
+
+# ── Terraform ─────────────────────────────────────────────────────────────────
+alias tf="terraform"
+alias tfi="terraform init"
+alias tfp="terraform plan"
+alias tfa="terraform apply"
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+alias reload="source ~/.zshrc"
+alias zshrc="$EDITOR ~/.zshrc"
+alias aliases="$EDITOR ~/.zsh_aliases"
+alias ip="curl -s ifconfig.me"
+alias ports="lsof -i -P -n | grep LISTEN"
+alias path='echo $PATH | tr ":" "\n"'
+alias week="date +%V"
+
+# ── fd + ripgrep ──────────────────────────────────────────────────────────────
+alias find="fd"
+alias grep="rg"
