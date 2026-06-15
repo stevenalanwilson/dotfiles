@@ -96,13 +96,15 @@ backup() {
 # ── AI — local Ollama ─────────────────────────────────────────────────────────
 # Ask a question or pipe content to a local Ollama model.
 # Nothing leaves your machine — safe for sensitive/client work.
+# Output is rendered as formatted markdown via bat.
 #
 # Usage:
 #   ask "what does this terraform block do"
 #   cat main.tf | ask "explain this"
 #   ask -m gemma3:4b "quick question"
-#   ask models        # list available models
-#   ask -h            # show help
+#   ask --plain "question"   # raw output, no formatting (good for piping)
+#   ask models               # list available models
+#   ask -h                   # show help
 #
 # Default model: llama3.2
 # Override:      ASK_MODEL env var or -m flag
@@ -120,10 +122,12 @@ Usage:
   ask "your question"
   cat file.txt | ask "summarise this"
   ask -m <model> "your question"
+  ask --plain "your question"
   ask models
 
 Options:
   -m <model>    use a specific model (default: llama3.2)
+  --plain       raw output, no markdown formatting (useful for piping)
   models        list all locally available models
   -h / --help   show this help
 
@@ -136,6 +140,7 @@ Examples:
   cat error.log | ask "what is causing this error"
   git diff | ask "summarise these changes"
   ask -m gemma3:4b "fast local question"
+  ask --plain "question" | pbcopy
 EOF
     return 0
   fi
@@ -157,16 +162,25 @@ else:
     return 0
   fi
 
-  # ── model flag ────────────────────────────────────────────────────────────
+  # ── flags ─────────────────────────────────────────────────────────────────
   local model="$ASK_MODEL"
-  if [[ "$1" == "-m" ]]; then
-    if [[ -z "$2" ]]; then
-      echo "Error: -m requires a model name. Run 'ask models' to see options."
-      return 1
-    fi
-    model="$2"
-    shift 2
-  fi
+  local plain=0
+
+  while [[ "$1" == -* ]]; do
+    case "$1" in
+      -m)
+        if [[ -z "$2" ]]; then
+          echo "Error: -m requires a model name. Run 'ask models' to see options."
+          return 1
+        fi
+        model="$2"; shift 2 ;;
+      --plain)
+        plain=1; shift ;;
+      *)
+        echo "Unknown option: $1. Run 'ask -h' for help."
+        return 1 ;;
+    esac
+  done
 
   # ── check ollama is running ───────────────────────────────────────────────
   if ! curl -s --max-time 2 "$ASK_HOST/api/tags" &>/dev/null; then
@@ -194,12 +208,13 @@ else:
     prompt="$1"
   fi
 
-  # ── stream response ───────────────────────────────────────────────────────
+  # ── build payload ─────────────────────────────────────────────────────────
   echo "⠿ asking ${model}...\n" >&2
 
-  # write payload to temp file to avoid shell quoting issues
-  local tmpfile
+  local tmpfile outfile
   tmpfile=$(mktemp /tmp/ask_payload.XXXXXX)
+  outfile=$(mktemp /tmp/ask_output.XXXXXX)
+
   python3 -c "
 import json, sys
 payload = {
@@ -210,22 +225,33 @@ payload = {
 print(json.dumps(payload))
 " "$model" "$prompt" > "$tmpfile"
 
+  # ── collect full response into outfile ────────────────────────────────────
   curl -s "$ASK_HOST/api/generate" \
     -H "Content-Type: application/json" \
     -d "@$tmpfile" | python3 -c "
 import sys, json
+tokens = []
 for line in sys.stdin:
     line = line.strip()
     if not line:
         continue
     try:
         data = json.loads(line)
-        token = data.get('response', '')
-        print(token, end='', flush=True)
+        tokens.append(data.get('response', ''))
         if data.get('done'):
-            print()
+            break
     except json.JSONDecodeError:
         pass
-"
-  rm -f "$tmpfile"
+with open(sys.argv[1], 'w') as f:
+    f.write(''.join(tokens))
+" "$outfile"
+
+  # ── render output ─────────────────────────────────────────────────────────
+  if [[ $plain -eq 0 ]] && command -v bat &>/dev/null; then
+    bat --language=markdown --style=plain "$outfile"
+  else
+    cat "$outfile"
+  fi
+
+  rm -f "$tmpfile" "$outfile"
 }
