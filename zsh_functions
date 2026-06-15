@@ -92,3 +92,140 @@ backup() {
   cp "$1" "${1}.$(date +%Y%m%d_%H%M%S).bak"
   echo "Backed up to ${1}.$(date +%Y%m%d_%H%M%S).bak"
 }
+
+# ── AI — local Ollama ─────────────────────────────────────────────────────────
+# Ask a question or pipe content to a local Ollama model.
+# Nothing leaves your machine — safe for sensitive/client work.
+#
+# Usage:
+#   ask "what does this terraform block do"
+#   cat main.tf | ask "explain this"
+#   ask -m gemma3:4b "quick question"
+#   ask models        # list available models
+#   ask -h            # show help
+#
+# Default model: llama3.2
+# Override:      ASK_MODEL env var or -m flag
+
+ASK_MODEL="${ASK_MODEL:-llama3.2}"
+ASK_HOST="${ASK_HOST:-http://localhost:11434}"
+
+ask() {
+  # ── help ──────────────────────────────────────────────────────────────────
+  if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    cat <<'EOF'
+ask — query a local Ollama model from the shell
+
+Usage:
+  ask "your question"
+  cat file.txt | ask "summarise this"
+  ask -m <model> "your question"
+  ask models
+
+Options:
+  -m <model>    use a specific model (default: llama3.2)
+  models        list all locally available models
+  -h / --help   show this help
+
+Environment:
+  ASK_MODEL     set default model (e.g. export ASK_MODEL=gemma3:4b)
+  ASK_HOST      Ollama host (default: http://localhost:11434)
+
+Examples:
+  ask "what is a terraform workspace"
+  cat error.log | ask "what is causing this error"
+  git diff | ask "summarise these changes"
+  ask -m gemma3:4b "fast local question"
+EOF
+    return 0
+  fi
+
+  # ── list models ───────────────────────────────────────────────────────────
+  if [[ "$1" == "models" ]]; then
+    curl -s "$ASK_HOST/api/tags" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+models = data.get('models', [])
+if not models:
+    print('No models found. Run: ollama pull llama3.2')
+else:
+    print('Available models:')
+    for m in models:
+        size_gb = m['size'] / 1e9
+        print(f'  {m[\"name\"]:<30} {size_gb:.1f} GB')
+" 2>/dev/null || echo "Ollama not running — start it with: ollama serve"
+    return 0
+  fi
+
+  # ── model flag ────────────────────────────────────────────────────────────
+  local model="$ASK_MODEL"
+  if [[ "$1" == "-m" ]]; then
+    if [[ -z "$2" ]]; then
+      echo "Error: -m requires a model name. Run 'ask models' to see options."
+      return 1
+    fi
+    model="$2"
+    shift 2
+  fi
+
+  # ── check ollama is running ───────────────────────────────────────────────
+  if ! curl -s --max-time 2 "$ASK_HOST/api/tags" &>/dev/null; then
+    echo "Ollama is not running. Start it with: ollama serve"
+    return 1
+  fi
+
+  # ── build prompt ──────────────────────────────────────────────────────────
+  local prompt=""
+
+  if [[ -p /dev/stdin ]]; then
+    local piped_content
+    piped_content=$(cat)
+    if [[ -n "$1" ]]; then
+      prompt="${1}"$'\n\n'"${piped_content}"
+    else
+      prompt="$piped_content"
+    fi
+  else
+    if [[ -z "$1" ]]; then
+      echo "Usage: ask \"your question\"  or  cat file | ask \"question\""
+      echo "       ask -h for full help"
+      return 1
+    fi
+    prompt="$1"
+  fi
+
+  # ── stream response ───────────────────────────────────────────────────────
+  echo "⠿ asking ${model}...\n" >&2
+
+  # write payload to temp file to avoid shell quoting issues
+  local tmpfile
+  tmpfile=$(mktemp /tmp/ask_payload.XXXXXX)
+  python3 -c "
+import json, sys
+payload = {
+    'model': sys.argv[1],
+    'prompt': sys.argv[2],
+    'stream': True
+}
+print(json.dumps(payload))
+" "$model" "$prompt" > "$tmpfile"
+
+  curl -s "$ASK_HOST/api/generate" \
+    -H "Content-Type: application/json" \
+    -d "@$tmpfile" | python3 -c "
+import sys, json
+for line in sys.stdin:
+    line = line.strip()
+    if not line:
+        continue
+    try:
+        data = json.loads(line)
+        token = data.get('response', '')
+        print(token, end='', flush=True)
+        if data.get('done'):
+            print()
+    except json.JSONDecodeError:
+        pass
+"
+  rm -f "$tmpfile"
+}
