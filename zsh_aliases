@@ -4,25 +4,17 @@ alias ...="cd ../.."
 alias ~="cd ~"
 alias proj="cd ~/Projects"
 
-# ── Projects ──────────────────────────────────────────────────────────────────
-alias p73="cd ~/Projects/73rdAllestreeWebApp"
-alias psaw="cd ~/Projects/SAW"
-alias pai="cd ~/Projects/AI-cost-explination"
-alias pkit="cd ~/Projects/app-prototyping-kit"
-alias pagent="cd ~/Projects/agentflow-flows"
-alias pdots="cd ~/dotfiles"
-
-# Open a project in VS Code
-alias c73="code ~/Projects/73rdAllestreeWebApp"
-alias csaw="code ~/Projects/SAW"
-alias cai="code ~/Projects/AI-cost-explination"
-alias ckit="code ~/Projects/app-prototyping-kit"
-alias cagent="code ~/Projects/agentflow-flows"
-alias cdots="code ~/dotfiles"
+# ── Projects (cd + open in VS Code) ──────────────────────────────────────────
+alias p73="cd ~/Projects/73rdAllestreeWebApp && code ."
+alias psaw="cd ~/Projects/SAW && code ."
+alias pai="cd ~/Projects/AI-cost-explination && code ."
+alias pkit="cd ~/Projects/app-prototyping-kit && code ."
+alias pagent="cd ~/Projects/agentflow-flows && code ."
+alias pdots="cd ~/dotfiles && code ."
 
 # ── VS Code ───────────────────────────────────────────────────────────────────
 alias e="code"          # open file or dir:  e file.txt  /  e .
-alias ea="code ."       # open current dir
+alias ea="code ."       # open current directory
 
 # ── eza (better ls) ───────────────────────────────────────────────────────────
 alias ls="eza --icons"
