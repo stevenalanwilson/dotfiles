@@ -63,6 +63,9 @@
 
 [rerere]
 	enabled = true
+
+# Note: [maintenance] repos are machine-specific and managed locally.
+# To enrol your projects: cd into each repo and run: git maintenance start
 [maintenance]
 	repo = /Users/stevenwilson/Projects/73rdAllestreeWebApp
 	repo = /Users/stevenwilson/Projects/AI-cost-explination

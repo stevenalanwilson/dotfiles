@@ -209,8 +209,6 @@ else:
   fi
 
   # ── build payload ─────────────────────────────────────────────────────────
-  echo "⠿ asking ${model}...\n" >&2
-
   local tmpfile outfile
   tmpfile=$(mktemp /tmp/ask_payload.XXXXXX)
   outfile=$(mktemp /tmp/ask_output.XXXXXX)
@@ -225,7 +223,23 @@ payload = {
 print(json.dumps(payload))
 " "$model" "$prompt" > "$tmpfile"
 
-  # ── collect full response into outfile ────────────────────────────────────
+  # ── spinner while waiting for response ───────────────────────────────────
+  local spinner_frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
+  local spinner_i=0
+
+  _ask_spinner() {
+    while true; do
+      printf "\r${spinner_frames[$spinner_i]} asking %s..." "$model" >&2
+      spinner_i=$(( (spinner_i + 1) % ${#spinner_frames[@]} ))
+      sleep 0.1
+    done
+  }
+
+  _ask_spinner &
+  local spinner_pid=$!
+  trap "kill $spinner_pid 2>/dev/null; printf '\r\033[K' >&2" INT
+
+  # ── collect full response ─────────────────────────────────────────────────
   curl -s "$ASK_HOST/api/generate" \
     -H "Content-Type: application/json" \
     -d "@$tmpfile" | python3 -c "
@@ -245,6 +259,12 @@ for line in sys.stdin:
 with open(sys.argv[1], 'w') as f:
     f.write(''.join(tokens))
 " "$outfile"
+
+  # stop spinner and clear the line
+  kill $spinner_pid 2>/dev/null
+  wait $spinner_pid 2>/dev/null
+  printf '\r\033[K' >&2
+  trap - INT
 
   # ── render output ─────────────────────────────────────────────────────────
   if [[ $plain -eq 0 ]] && command -v bat &>/dev/null; then

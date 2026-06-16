@@ -10,6 +10,7 @@ alias psaw="cd ~/Projects/SAW && code ."
 alias pai="cd ~/Projects/AI-cost-explination && code ."
 alias pkit="cd ~/Projects/app-prototyping-kit && code ."
 alias pagent="cd ~/Projects/agentflow-flows && code ."
+alias papps="cd ~/Projects/apps && code ."
 alias pdots="cd ~/dotfiles && code ."
 
 # ── VS Code ───────────────────────────────────────────────────────────────────
