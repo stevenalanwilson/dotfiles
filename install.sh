@@ -72,6 +72,7 @@ symlink zshrc            .zshrc
 symlink zsh_aliases      .zsh_aliases
 symlink zsh_options      .zsh_options
 symlink zsh_functions    .zsh_functions
+symlink zsh_cheatsheet   .zsh_cheatsheet
 symlink p10k.zsh         .p10k.zsh
 symlink gitconfig        .gitconfig
 symlink gitignore_global .gitignore_global
