@@ -1,0 +1,83 @@
+# Cheatsheet data — command|section|description
+# Edit this file to add/update entries shown by the `cheatsheet` command.
+
+..|nav|cd ..
+...|nav|cd ../..
+proj|nav|cd ~/Projects
+z <name>|nav|jump to a frecent directory matching <name>
+p73|projects|cd 73rdAllestreeWebApp + open in VS Code
+psaw|projects|cd SAW + open in VS Code
+pai|projects|cd AI-cost-explination + open in VS Code
+pkit|projects|cd app-prototyping-kit + open in VS Code
+pagent|projects|cd agentflow-flows + open in VS Code
+papps|projects|cd apps + open in VS Code
+pdots|projects|cd dotfiles + open in VS Code
+e <path>|code|open a file or directory in VS Code
+ea|code|open current directory in VS Code
+mkcd <dir>|files|mkdir and cd in one step
+gitclone <url>|files|git clone and cd into the repo
+extract <file>|files|extract any archive (tar/zip/gz/bz2/7z)
+backup <file>|files|create a dated .bak copy of a file
+dirsize [path]|files|show directory sizes, largest first
+json [file]|files|pretty-print JSON from a file or pipe
+serve [port]|files|start a local HTTP server (default 8000)
+ls|files|list files with icons (eza)
+ll|files|long list — icons, git status, dirs first
+lt|files|tree view, 2 levels deep
+llt|files|long tree view with git status
+cat <file>|files|view file with syntax highlighting (bat)
+gs|git|git status -sb
+ga|git|git add
+gc "<msg>"|git|git commit -m
+gca|git|amend last commit, no message change
+gp|git|git push
+gpf|git|push --force-with-lease
+gl|git|log — oneline graph, last 20
+gd|git|git diff
+gds|git|git diff --staged
+gco <branch>|git|git checkout
+gcb <branch>|git|checkout -b (new branch)
+gpr|git|open pull request in browser (gh)
+gundo|git|undo last commit, keep changes
+gunstage|git|unstage files
+recent [n]|git|show last n commits (default 5)
+hist|git|fuzzy search command history with fzf
+ni|node|npm install
+nr <script>|node|npm run
+nrd|node|npm run dev
+nrb|node|npm run build
+nlg|node|npm list -g --depth=0
+pni|node|pnpm install
+pnrd|node|pnpm run dev
+pnrb|node|pnpm run build
+port <number>|node|kill whatever process is on that port
+py|python|python3
+venv|python|create + activate venv with uv
+ipy|python|ipython
+tf|terraform|terraform
+tfi|terraform|terraform init
+tfp|terraform|terraform plan
+tfa|terraform|terraform apply
+tfd|terraform|terraform destroy
+tfo|terraform|terraform output
+reload|utils|source ~/.zshrc
+zshrc|utils|open .zshrc in VS Code
+aliases|utils|open .zsh_aliases in VS Code
+functions|utils|open .zsh_functions in VS Code
+dotfiles|utils|cd dotfiles + open in VS Code
+ip|utils|show public IP address
+localip|utils|show local network IP
+ports|utils|list listening ports
+path|utils|print PATH one entry per line
+week|utils|print ISO week number
+now|utils|print current datetime
+cleanup|utils|remove .DS_Store and *.log from current dir
+showfiles|macos|show hidden files in Finder
+hidefiles|macos|hide hidden files in Finder
+flushdns|macos|flush DNS cache
+ask "<question>"|ai|ask a local Ollama model (private, offline)
+ask -m <model> "<q>"|ai|ask using a specific model
+ask --plain "<q>"|ai|raw output, no markdown (for piping)
+ask models|ai|list locally available Ollama models
+cheatsheet|ai|show this list
+cheatsheet -f|ai|fuzzy search this list with fzf

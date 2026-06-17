@@ -37,6 +37,9 @@ export PATH="/Users/stevenwilson/.antigravity-ide/antigravity-ide/bin:$PATH"
 # ── Functions ─────────────────────────────────────────────────────────────────
 [[ -f ~/.zsh_functions ]] && source ~/.zsh_functions
 
+# ── Cheatsheet ────────────────────────────────────────────────────────────────
+[[ -f ~/.zsh_cheatsheet ]] && source ~/.zsh_cheatsheet
+
 # ── fzf — fuzzy finder ────────────────────────────────────────────────────────
 source <(fzf --zsh)
 

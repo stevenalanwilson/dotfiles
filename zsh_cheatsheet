@@ -1,0 +1,82 @@
+# ── cheatsheet ────────────────────────────────────────────────────────────────
+# Reminds you of all the aliases and functions set up in these dotfiles.
+#
+# Usage:
+#   cheatsheet            # show everything, grouped
+#   cheatsheet git        # show only the git section
+#   cheatsheet -f          # fuzzy search every entry with fzf
+#
+# Source of truth: ~/dotfiles/cheatsheet_data
+# Add a new alias/function? Add a matching line there and it shows up here too.
+
+cheatsheet() {
+  local data_file="$HOME/dotfiles/cheatsheet_data"
+
+  if [[ ! -f "$data_file" ]]; then
+    echo "Cheatsheet data not found at $data_file"
+    return 1
+  fi
+
+  # ── fuzzy search mode ───────────────────────────────────────────────────
+  if [[ "$1" == "-f" || "$1" == "--fuzzy" ]]; then
+    if ! command -v fzf &>/dev/null; then
+      echo "fzf not installed — falling back to full listing"
+      cheatsheet
+      return
+    fi
+    grep -v '^#' "$data_file" | grep -v '^$' | \
+      fzf --delimiter='|' \
+          --with-nth=1,2,3 \
+          --preview 'echo {3}' \
+          --preview-window=down:3:wrap \
+          --header="Command | Section | Description"
+    return
+  fi
+
+  # ── help ───────────────────────────────────────────────────────────────
+  if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    cat <<'EOF'
+cheatsheet — reminds you of every alias and function in your dotfiles
+
+Usage:
+  cheatsheet            show everything, grouped by section
+  cheatsheet <section>  show only that section (e.g. git, ai, projects)
+  cheatsheet -f          fuzzy search all entries with fzf
+  cheatsheet -h          show this help
+
+Sections: nav, projects, code, files, git, node, python,
+          terraform, utils, macos, ai
+EOF
+    return 0
+  fi
+
+  # ── filtered or full listing ──────────────────────────────────────────
+  local filter="$1"
+  local current_section=""
+  local printed_header=0
+
+  while IFS='|' read -r cmd section desc; do
+    [[ "$cmd" == \#* || -z "$cmd" ]] && continue
+
+    if [[ -n "$filter" && "$section" != "$filter" ]]; then
+      continue
+    fi
+
+    if [[ "$section" != "$current_section" ]]; then
+      [[ $printed_header -eq 1 ]] && echo ""
+      if command -v bat &>/dev/null; then
+        echo "## ${section}" | bat --language=markdown --style=plain --paging=never
+      else
+        echo "── ${section} ──"
+      fi
+      current_section="$section"
+      printed_header=1
+    fi
+
+    printf "  %-14s %s\n" "$cmd" "$desc"
+  done < "$data_file"
+
+  if [[ -n "$filter" && $printed_header -eq 0 ]]; then
+    echo "No section called '$filter'. Run 'cheatsheet -h' to see available sections."
+  fi
+}
