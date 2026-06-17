@@ -60,6 +60,16 @@ tfp|terraform|terraform plan
 tfa|terraform|terraform apply
 tfd|terraform|terraform destroy
 tfo|terraform|terraform output
+dcu|docker|docker compose up
+dcub|docker|docker compose up --build
+dcud|docker|docker compose up -d (detached)
+dcd|docker|docker compose down
+dcr|docker|docker compose restart
+dps|docker|docker ps
+dpsa|docker|docker ps -a (include stopped)
+dlogs|docker|docker compose logs -f
+dexec <svc> <cmd>|docker|docker compose exec
+dprune|docker|docker system prune -f
 reload|utils|source ~/.zshrc
 zshrc|utils|open .zshrc in VS Code
 aliases|utils|open .zsh_aliases in VS Code

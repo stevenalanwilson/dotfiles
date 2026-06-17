@@ -45,7 +45,7 @@ Usage:
   cheatsheet -h          show this help
 
 Sections: nav, projects, code, files, git, node, python,
-          terraform, utils, macos, ai
+          terraform, docker, utils, macos, ai
 EOF
     return 0
   fi

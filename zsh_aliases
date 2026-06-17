@@ -67,6 +67,18 @@ alias tfa="terraform apply"
 alias tfd="terraform destroy"
 alias tfo="terraform output"
 
+# ── Docker ────────────────────────────────────────────────────────────────────
+alias dcu="docker compose up"
+alias dcub="docker compose up --build"
+alias dcud="docker compose up -d"
+alias dcd="docker compose down"
+alias dcr="docker compose restart"
+alias dps="docker ps"
+alias dpsa="docker ps -a"
+alias dlogs="docker compose logs -f"
+alias dexec="docker compose exec"
+alias dprune="docker system prune -f"
+
 # ── Utilities ─────────────────────────────────────────────────────────────────
 alias reload="source ~/.zshrc"
 alias zshrc="$EDITOR ~/.zshrc"
