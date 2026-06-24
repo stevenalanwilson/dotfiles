@@ -40,6 +40,21 @@ export PATH="/Users/stevenwilson/.antigravity-ide/antigravity-ide/bin:$PATH"
 # ── Cheatsheet ────────────────────────────────────────────────────────────────
 [[ -f ~/.zsh_cheatsheet ]] && source ~/.zsh_cheatsheet
 
+# ── Daily reminder ────────────────────────────────────────────────────────────
+# Shows a one-line nudge about the cheatsheet command, once per day.
+_cheatsheet_reminder() {
+  local marker="$HOME/.cache/.cheatsheet_reminder_date"
+  local today
+  today=$(date +%Y-%m-%d)
+  mkdir -p "$HOME/.cache"
+
+  if [[ ! -f "$marker" || "$(cat "$marker" 2>/dev/null)" != "$today" ]]; then
+    echo "💡 Forgotten a shortcut? Run \033[1mcheatsheet\033[0m to see all aliases & functions (or \033[1mcheatsheet -f\033[0m to fuzzy search)."
+    echo "$today" > "$marker"
+  fi
+}
+_cheatsheet_reminder
+
 # ── fzf — fuzzy finder ────────────────────────────────────────────────────────
 source <(fzf --zsh)
 
